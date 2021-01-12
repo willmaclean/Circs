@@ -1,6 +1,8 @@
 
 def param_sanity(transactions):
 
+	import pandas as pd
+
 	#performs a type check on the input df
 
 	if set(transactions.columns) != {'from','to','amount'}:
@@ -10,5 +12,4 @@ def param_sanity(transactions):
 	else:
 
 		return True
-
 
