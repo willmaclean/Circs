@@ -1,5 +1,10 @@
 from check import param_sanity
 
+"""
+Functions and classes which manipulate networks with a view to finding and analysing friendship circles. 
+
+"""
+
 
 class Pairs:
 
@@ -101,6 +106,7 @@ class Circs(Cliques):
 		Cliques.__init__(self)
 		self.circ_ids_ = None
 		self.circ_ = None
+		self.df_ = None
 
 	def fit(self, transactions, k=3, c = 2, k_prime= 2):
 
@@ -123,6 +129,7 @@ class Circs(Cliques):
 
 		self.circ_ = networkx.k_core(dg_pruned, k=2)
 		self.circ_ids_ = self.circ_.nodes
+		self.df_ = transactions
 
 
 	def get_circ_graph(self):
@@ -134,10 +141,54 @@ class Circs(Cliques):
 
 		return self.circ_
 
+	def describe(self):
+
+		return self.df_.describe()
 
 
+def get_snapshot(G, date):
+
+	"""
+	Returns a snapshot of a multi-graph
+
+	Arguments:
+
+	G: a multigraph
+	date: when the snapshot should be for
+
+	Returns:
+
+	An undirected graph
+	"""
+   
+
+    # Find edges that existed during timestamp
+    snapshot_edges = [(i,j,k) for i,j,k in G.edges if k==date]
 
 
+    # Create network from edges
+    return networkx.Graph(G.edge_subgraph(snapshot_edges))
+
+def find_subgraphs(G, nodes):
+
+	"""
+	A generic function for producing a subgraph of G from a list of nodes. It reproduces the class of the original graph.
+	"""
+
+	SG = G.__class__()
+	SG.add_nodes_from((n, G.nodes[n]) for n in nodes)
+	if SG.is_multigraph():
+	    SG.add_edges_from((n, nbr, key, d)
+	        for n, nbrs in G.adj.items() if n in nodes
+	        for nbr, keydict in nbrs.items() if nbr in nodes
+	        for key, d in keydict.items())
+	else:
+	    SG.add_edges_from((n, nbr, d)
+	        for n, nbrs in G.adj.items() if n in nodes
+	        for nbr, d in nbrs.items() if nbr in nodes)
+	SG.graph.update(G.graph)
+
+	return SG
 
 
 
