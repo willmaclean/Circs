@@ -20,11 +20,18 @@ class Pairs:
 
 	def fit(self, transactions):
 
+		"""
+		finds the pairs
+		"""
+
 		
 		if param_sanity(transactions):
 
+			#creating a df in which all transactions are also reversed
 			flipped = transactions.copy().rename(columns={'from':'to','to':'from','amount':'amount'})
 			back_and_forth = pd.concat([to_and_fro, flipped])[['to','from']]
+
+			#saving the ids of the back and forth transacters
 			self.pair_ids_ = back_and_forth[back_and_forth.duplicated()].to.values
 
 
