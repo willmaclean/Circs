@@ -6,7 +6,7 @@ class TestPairs(unittest.TestCase):
 
 	def setUp(self):
 		#load test data
-		self.df_ = pd.read_pickle('transactions_core_monthly_grouped.pkl')
+		self.df_ = pd.read_pickle('fixtures/transactions_core_monthly_grouped.pkl')
 
 	def test_input(self):
 		with self.assertRaises(KeyError):
@@ -21,7 +21,7 @@ class TestPairs(unittest.TestCase):
 class Testsubgraph(unittest.TestCase):
 
 	def setUp(self):
-		self.df_ = pd.read_pickle('transactions_core_monthly_grouped.pkl')
+		self.df_ = pd.read_pickle('fixtures/transactions_core_monthly_grouped.pkl')
 
 	def test_graph(self):
 		G = find_subgraphs(self.df_)
